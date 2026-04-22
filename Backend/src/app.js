@@ -1,6 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 import morgan from 'morgan';
+import { createCorsOptions } from './config/cors.js';
 import { env } from './config/env.js';
 import { errorHandler, notFoundHandler } from './modules/taxi/middlewares/errorMiddleware.js';
 import { taxiRouter } from './modules/taxi/routes/index.js';
@@ -8,12 +9,7 @@ import { taxiRouter } from './modules/taxi/routes/index.js';
 export const createApp = () => {
   const app = express();
 
-  app.use(
-    cors({
-      origin: env.corsOrigin === '*' ? true : env.corsOrigin.split(','),
-      credentials: true,
-    }),
-  );
+  app.use(cors(createCorsOptions(env.corsOrigin)));
   app.use(express.json({ limit: '10mb' }));
   app.use(express.urlencoded({ extended: true }));
   app.use(morgan(env.nodeEnv === 'production' ? 'combined' : 'dev'));
